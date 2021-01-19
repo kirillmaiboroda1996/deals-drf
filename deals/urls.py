@@ -1,5 +1,11 @@
-from django.urls import path
-from .views import FileUploadAPIView
+from django.urls import path, include
+from rest_framework import routers
+
+from .views import DealViewSet
+
+router = routers.SimpleRouter()
+router.register(r'allmethods', DealViewSet, basename='allmethods')
+
 urlpatterns = [
-    path('v1/uploads', FileUploadAPIView.as_view(), name='upload')
 ]
+urlpatterns += router.urls
