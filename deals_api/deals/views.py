@@ -1,16 +1,17 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
-
+import json
 from .models import Deal
 from .serializers import (
     FileUploadSerializer,
     DealListSerializer,
 )
 from .services import (
-    import_from_csv,
-    get_csv_dict,
+    get_json_data,
     get_best_five_deals
 )
+
+from .tasks import import_from_csv
 
 
 class DealViewSet(viewsets.ModelViewSet):
@@ -37,6 +38,7 @@ class DealViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        reader_from_csv = get_csv_dict(serializer)
-        import_from_csv(reader_from_csv)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        reader_from_csv = get_json_data(serializer)
+        import_from_csv.delay(reader_from_csv)
+
+        return Response(status=status.HTTP_200_OK)

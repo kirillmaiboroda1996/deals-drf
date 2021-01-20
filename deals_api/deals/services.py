@@ -42,7 +42,7 @@ def get_best_five_deals():
             'gems': list(
                 set(
                     Deal.objects.filter(customer=item['username'])
-                                .values_list('item', flat=True)
+                        .values_list('item', flat=True)
                 )
             )
         }
@@ -53,17 +53,13 @@ def get_best_five_deals():
     return deals
 
 
-def import_from_csv(dict_reader):
-    """The function creates objects of Deal model from given DictReader obj."""
-    for row in dict_reader:
-        Deal.objects.create(**row)
-
-
-def get_csv_dict(serializer):
+def get_json_data(serializer):
     """The function returns DictReader object."""
     csv_file = serializer.validated_data['file']
-
     decoded_file = csv_file.read().decode()
     io_string = io.StringIO(decoded_file)
     reader_from_csv = csv.DictReader(io_string)
-    return reader_from_csv
+    json_data = [dict(i) for i in reader_from_csv]
+    return json_data
+
+
