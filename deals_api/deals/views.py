@@ -1,6 +1,7 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
+from .models import Deal
 from .serializers import (
     FileUploadSerializer,
     DealListSerializer,
@@ -19,7 +20,7 @@ class DealViewSet(viewsets.ModelViewSet):
     get_serializer_class - returns serializers in depends witch request method was send.
 
     """
-    queryset = get_best_five_deals()
+    queryset = Deal.objects.all()
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -29,7 +30,7 @@ class DealViewSet(viewsets.ModelViewSet):
         return DealListSerializer
 
     def list(self, request, *args, **kwargs):
-        deals = self.get_queryset()
+        deals = get_best_five_deals()
         return Response(deals)
 
     def create(self, request, *args, **kwargs):

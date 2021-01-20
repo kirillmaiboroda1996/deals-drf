@@ -14,7 +14,6 @@ def _get_common_gems(deals):
         current_deal_crossing_gems = []
         for deal_copy in deal_copy:
             crossing_gems = list(set(deal['gems']) & set(deal_copy['gems']))
-            print(crossing_gems)
             if crossing_gems:
                 current_deal_crossing_gems.extend(crossing_gems)
         deal['gems'] = current_deal_crossing_gems
@@ -49,6 +48,7 @@ def get_best_five_deals():
         }
         for item in deals
     ]
+
     _get_common_gems(deals)
     return deals
 

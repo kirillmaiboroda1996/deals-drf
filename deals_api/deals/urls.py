@@ -1,11 +1,6 @@
-from django.urls import path, include
-from rest_framework import routers
-
+from django.urls import path
 from .views import DealViewSet
 
-router = routers.SimpleRouter()
-router.register(r'allmethods', DealViewSet, basename='allmethods')
-
 urlpatterns = [
+    path('uploads/', DealViewSet.as_view({'post': 'create', 'get': 'list'}))
 ]
-urlpatterns += router.urls
