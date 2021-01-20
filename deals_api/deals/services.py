@@ -42,7 +42,7 @@ def get_best_five_deals():
             'gems': list(
                 set(
                     Deal.objects.filter(customer=item['username'])
-                        .values_list('item', flat=True)
+                                .values_list('item', flat=True)
                 )
             )
         }
