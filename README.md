@@ -1,5 +1,4 @@
 # About Deals API
-
 [![Generic badge](https://img.shields.io/badge/Django-blue.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/DjangoRestFramework-orange.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/Postgres-grey.svg)](https://shields.io/)
@@ -36,7 +35,6 @@ git clone https://github.com/kirillmaiboroda1996/deals-drf.git
 ```
 
 ### Development
-
 If you want to get project for development, from docker-compose.yml directory make:
 
 ```bash
@@ -47,6 +45,7 @@ docker-compose up --build -d
 
 Now you can open service in your browser:<br>
 http://127.0.0.1:8000/api/deals/
+
 
 ### Production
 If you want to get project for production, from docker-compose.prod.yml directory make:
