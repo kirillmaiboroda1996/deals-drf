@@ -1,4 +1,4 @@
-#About Deals API
+# About Deals API
 [![Generic badge](https://img.shields.io/badge/Django-blue.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/DjangoRestFramework-orange.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/Postgres-grey.svg)](https://shields.io/)
@@ -34,7 +34,7 @@ So, in your terminal you have to make:
 git clone https://github.com/kirillmaiboroda1996/deals-drf.git
 ```
 
-###Development
+### Development
 If you want to get project for development, from docker-compose.yml directory make:
 
 ```bash
@@ -47,7 +47,7 @@ Now you can open service in your browser:<br>
 http://127.0.0.1:8000/api/deals/
 
 
-###Production
+### Production
 If you want to get project for production, from docker-compose.prod.yml directory make:
 ```bash
 docker-compose -f docker-compose.prod.yml up -d --build
@@ -64,7 +64,7 @@ to collect static for nginx.
 Now you can open service in your browser:<br>
 http://localhost:1337/api/deals/
 
-##About urls
+## About urls
 
 - monitoring workers by a flower:<br>
 http://localhost:5555
