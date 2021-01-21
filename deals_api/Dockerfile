@@ -21,6 +21,6 @@ RUN pip install -r requirements.txt
 COPY ./entrypoint.sh .
 # copy project
 COPY . .
-
+EXPOSE 5555
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/deals_api/entrypoint.sh"]

@@ -36,7 +36,7 @@ services:
   celery:
     build: ./deals_api
     container_name: 'deals_api_celery'
-    command: celery --app deals_api worker -E
+    command: celery --app deals_api worker -n deal -E
     volumes:
       - ./deals_api:/usr/src/deals_api/
     env_file:
@@ -51,7 +51,9 @@ services:
     build: ./deals_api
     env_file:
       - ./.env.dev
-    command: flower --app deals_api --broker=redis://redis:6379
+    command: flower --app deals_api worker -n deal --broker=redis://redis:6379
+    ports:
+    - 5555
     depends_on:
       - celery
 volumes:

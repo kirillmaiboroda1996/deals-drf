@@ -19,12 +19,6 @@ from .tasks import import_from_csv
 
 
 class DealViewSet(viewsets.ModelViewSet):
-    """list action - returns five deals by get_best_five_deals function.
-
-    create action - saves data in db table Deals from requested csv file.
-    get_serializer_class - returns serializers in depends witch request method was send.
-
-    """
     queryset = Deal.objects.all()
 
     def get_serializer_class(self):
