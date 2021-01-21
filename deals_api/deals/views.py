@@ -49,8 +49,7 @@ class DealViewSet(viewsets.ModelViewSet):
 
 
 class TaskResult(APIView):
-    """Get the result of processing a request"""
+    """Get the result of processing a request."""
     def get(self, request, task_id):
         result = services.get_task_result(task_id)
         return Response(result)
-
