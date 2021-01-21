@@ -11,15 +11,11 @@
 
 Deals Api is a service on django rest framework by which you can upload csv file with deals to database.
 
-<img src="https://vk.com/doc102586510_584476038"/>
-
 You can also get by 'GET' request top five deals by customers with:
 - _username of customer._
 - _sum of money which was spent._
 - _name of gems that were bought by at least two of the top five list 
   and this customer is one of these buyers._
-  
-<img src="https://vk.com/doc102586510_584475896"/>
 
 ___
 
