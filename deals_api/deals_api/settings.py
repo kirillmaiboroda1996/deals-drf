@@ -28,8 +28,9 @@ INSTALLED_APPS = [
 
     'deals',
 
-    'rest_framework',
     'drf_yasg',
+    'rest_framework',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -108,14 +109,14 @@ USE_L10N = True
 USE_TZ = True
 
 # Celery Configuration Options
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     "amount-counting": {
-        "task": "deals.tasks.add",
+        "task": "deals.tasks.import_from_csv",
         "schedule": 5.0,
     },
 }
@@ -128,7 +129,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "/mediafiles/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
-
-SWAGGER_SETTINGS = {
-    'VALIDATOR_URL': 'http://localhost:8189',
-}

@@ -1,13 +1,17 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 import json
+
+from rest_framework.views import APIView
+
+from . import services
 from .models import Deal
 from .serializers import (
     FileUploadSerializer,
     DealListSerializer,
 )
 from .services import (
-    get_json_data,
+    get_json_data_from_csv,
     get_best_five_deals
 )
 
@@ -38,7 +42,15 @@ class DealViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        reader_from_csv = get_json_data(serializer)
-        import_from_csv.delay(reader_from_csv)
+        json_data = get_json_data_from_csv(serializer)
+        import_from_csv.delay(json_data)
 
         return Response(status=status.HTTP_200_OK)
+
+
+class TaskResult(APIView):
+    """Get the result of processing a request"""
+    def get(self, request, task_id):
+        result = services.get_task_result(task_id)
+        return Response(result)
+

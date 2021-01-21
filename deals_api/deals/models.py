@@ -7,3 +7,6 @@ class Deal(models.Model):
     total = models.IntegerField()
     quantity = models.IntegerField()
     date = models.DateTimeField(max_length=250)
+
+    def __str__(self):
+        return self.customer

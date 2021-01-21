@@ -1,9 +1,14 @@
 import csv
 import io
+import json
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
+from rest_framework import status
+from rest_framework.response import Response
 
 from .models import Deal
+from django_celery_results.models import TaskResult
 
 
 def _get_common_gems(deals):
@@ -40,10 +45,7 @@ def get_best_five_deals():
             'username': item['username'],
             'spent_money': item['spent_money'],
             'gems': list(
-                set(
-                    Deal.objects.filter(customer=item['username'])
-                        .values_list('item', flat=True)
-                )
+                set(Deal.objects.filter(customer=item['username']).values_list('item', flat=True))
             )
         }
         for item in deals
@@ -53,13 +55,43 @@ def get_best_five_deals():
     return deals
 
 
-def get_json_data(serializer):
-    """The function returns DictReader object."""
+def get_json_data_from_csv(serializer):
+    """
+    The function returns Json Data from csv file,
+    for saving in db and celery tasks.
+
+    """
     csv_file = serializer.validated_data['file']
     decoded_file = csv_file.read().decode()
     io_string = io.StringIO(decoded_file)
     reader_from_csv = csv.DictReader(io_string)
+
+    if not csv_file:
+        return Response(
+            {
+                'Status': 'Error', 'Description': 'No data'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     json_data = [dict(i) for i in reader_from_csv]
+
+    if not json_data:
+        return Response(
+            {
+                'Status': 'Error',
+                'Description': 'Invalid encoding. UTF-8 is required'
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
     return json_data
 
 
+def get_task_result(task_id):
+    """Function returns csv import result."""
+    try:
+        result = TaskResult.objects.get(task_id=task_id)
+        result = json.loads(result.result)
+    except ObjectDoesNotExist:
+        result = {'status': 'Wrong id!'}
+    return result
