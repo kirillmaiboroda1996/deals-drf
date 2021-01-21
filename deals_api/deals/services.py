@@ -11,11 +11,16 @@ from .models import Deal
 from django_celery_results.models import TaskResult
 
 
-def _get_common_gems(deals):
-    """The function returns gems witch was buying 2 or more customers."""
-    for deal in deals:
-        deal_copy = deals.copy()
-        deal_copy.pop(deals.index(deal))
+def _get_common_gems(best_five_deals):
+    """
+    The function returns name of gems were bought
+    by at least two of the top five list
+    and this customer is one of these buyers
+
+    """
+    for deal in best_five_deals:
+        deal_copy = best_five_deals.copy()
+        deal_copy.pop(best_five_deals.index(deal))
         current_deal_crossing_gems = []
         for deal_copy in deal_copy:
             crossing_gems = list(set(deal['gems']) & set(deal_copy['gems']))
@@ -32,15 +37,15 @@ def get_best_five_deals():
     in top 5 deals from _get_common_gems func.
 
     """
-    deals = list(
+    best_five_deals = list(
         Deal.objects.values('customer')
             .annotate(total=Sum('total'))
             .order_by('total').reverse()[:5]
     )
 
-    deals = [{'username': item['customer'], 'spent_money': item['total']} for item in deals]
+    best_five_deals = [{'username': item['customer'], 'spent_money': item['total']} for item in best_five_deals]
 
-    deals = [
+    best_five_deals = [
         {
             'username': item['username'],
             'spent_money': item['spent_money'],
@@ -48,11 +53,11 @@ def get_best_five_deals():
                 set(Deal.objects.filter(customer=item['username']).values_list('item', flat=True))
             )
         }
-        for item in deals
+        for item in best_five_deals
     ]
+    _get_common_gems(best_five_deals)
 
-    _get_common_gems(deals)
-    return deals
+    return best_five_deals
 
 
 def get_json_data_from_csv(serializer):
@@ -61,29 +66,15 @@ def get_json_data_from_csv(serializer):
     for saving in db and celery tasks.
 
     """
-    csv_file = serializer.validated_data['file']
-    decoded_file = csv_file.read().decode()
-    io_string = io.StringIO(decoded_file)
-    reader_from_csv = csv.DictReader(io_string)
+    try:
+        csv_file = serializer.validated_data['file']
+        decoded_file = csv_file.read().decode()
+        io_string = io.StringIO(decoded_file)
+        reader_from_csv = csv.DictReader(io_string)
+        json_data = [dict(i) for i in reader_from_csv]
+    except UnicodeDecodeError:
+        return None
 
-    if not csv_file:
-        return Response(
-            {
-                'Status': 'Error', 'Description': 'No data'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    json_data = [dict(i) for i in reader_from_csv]
-
-    if not json_data:
-        return Response(
-            {
-                'Status': 'Error',
-                'Description': 'Invalid encoding. UTF-8 is required'
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
     return json_data
 
 

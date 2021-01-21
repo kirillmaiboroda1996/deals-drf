@@ -1,7 +1,7 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
-import json
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.views import APIView
 
 from . import services
@@ -28,6 +28,7 @@ class DealViewSet(viewsets.ModelViewSet):
             return FileUploadSerializer
         return DealListSerializer
 
+    @method_decorator(cache_page(60 * 60 * 2))
     def list(self, request, *args, **kwargs):
         deals = get_best_five_deals()
         return Response(deals)
@@ -38,7 +39,6 @@ class DealViewSet(viewsets.ModelViewSet):
 
         json_data = get_json_data_from_csv(serializer)
         import_from_csv.delay(json_data)
-
         return Response(status=status.HTTP_200_OK)
 
 
