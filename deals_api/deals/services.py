@@ -68,10 +68,22 @@ def get_json_data_from_csv(serializer):
     """
     try:
         csv_file = serializer.validated_data['file']
+        if not csv_file:
+            return Response(
+                {'Status': 'Error', 'Description': 'No data'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         decoded_file = csv_file.read().decode()
         io_string = io.StringIO(decoded_file)
         reader_from_csv = csv.DictReader(io_string)
         json_data = [dict(i) for i in reader_from_csv]
+
+        if not json_data:
+            return Response(
+                {'Status': 'Error', 'Description': 'Invalid encoding. UTF-8 is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     except UnicodeDecodeError:
         return None
 
