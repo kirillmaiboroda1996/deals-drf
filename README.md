@@ -15,7 +15,17 @@ You can also get by 'GET' request top five deals by customers with:
 - _username of customer._
 - _sum of money which was spent._
 - _name of gems that were bought by at least two of the top five list 
-  and this customer is one of these buyers._
+  and this customer is one of these buyers._ 
+  
+ #### Technologies in project
+ 
+ - _nginx web-server for static requests in prodaction_
+ - _gunicorn application server for prodaction_
+ - _celery usage for import csv files_
+ - _flower for monitoring tasks and workers_
+ - _redis - broker and backend for celery_
+ - _docker, docker-compose for containerization services_
+ - _postgres as a database for project_
 
 ___
 
@@ -70,3 +80,38 @@ http://localhost:8000/swagger/
   
 - get result of task:<br>
 http://localhost:8000/get-request-status/{task_id}/
+
+
+## Possible problems
+
+- url http://localhost:1337/api/deals/ showing without static in prod docker-compose.
+
+`solution:`
+
+```bash
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+```
+
+- redis-server already in use.
+
+`solution macOS:`
+
+
+```bash
+brew services stop redis
+```
+
+
+`solution for Linux:`
+
+
+```bash
+sudo service redis-server stop
+```
+
+- if you are using safari browser you need to choose api in GET dropdown button.
+
+
+
+
+
